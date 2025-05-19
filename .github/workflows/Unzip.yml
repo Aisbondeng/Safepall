@@ -1,0 +1,23 @@
+name: Unzip and Commit Extracted Files
+
+on:
+  push:
+    paths:
+      - 'horizons-export-*.zip'   # Trigger kalau ada perubahan file ZIP sesuai pola ini
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Unzip file
+        run: |
+          unzip horizons-export-*.zip -d extracted
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add extracted/
+          git commit -m "Auto unzip horizons-export zip and add extracted files" || echo "No changes to commit"
+          git push
